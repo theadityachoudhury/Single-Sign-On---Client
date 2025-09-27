@@ -26,6 +26,12 @@ export const links: Route.LinksFunction = () => [
     rel: "stylesheet",
     href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
   },
+  // SEO and security related links
+  { rel: "canonical", href: typeof window !== 'undefined' ? window.location.href : '' },
+  { rel: "manifest", href: "/manifest.json" },
+  { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" },
+  { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon-32x32.png" },
+  { rel: "icon", type: "image/png", sizes: "16x16", href: "/favicon-16x16.png" },
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -34,8 +40,29 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        
+        {/* Security Headers via Meta Tags */}
+        <meta httpEquiv="X-Content-Type-Options" content="nosniff" />
+        <meta httpEquiv="X-Frame-Options" content="DENY" />
+        <meta httpEquiv="X-XSS-Protection" content="1; mode=block" />
+        
+        {/* SEO Meta Tags */}
+        <meta name="author" content="HeapMind" />
+        <meta name="publisher" content="HeapMind" />
+        <meta name="application-name" content="HeapMind SSO" />
+        <meta name="apple-mobile-web-app-title" content="HeapMind" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        
+        {/* DNS Prefetching for Performance */}
+        <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="//fonts.gstatic.com" />
+        
         <Meta />
         <Links />
+        
+        {/* Theme Detection Script */}
         <script
           dangerouslySetInnerHTML={{
             __html: `

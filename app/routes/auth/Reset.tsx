@@ -1,15 +1,30 @@
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { useNavigate } from "react-router"
+import { useNavigate, type MetaFunction } from "react-router"
 
 import { ResetPasswordSchema } from "~/schema/auth"
 import AuthContainer from "~/components/features/auth/AuthContainer"
 import AuthHeader from "~/components/features/auth/AuthHeader"
 import AuthFooter from "~/components/features/auth/AuthFooter"
 import ResetForm from "~/components/features/auth/ResetForm"
+import { generateAuthPageKeywords, generateSEOMeta } from "~/lib/seo"
 
 type ResetFormValues = z.infer<typeof ResetPasswordSchema>
+
+export const meta: MetaFunction = ({ location }) => {
+  const url = `${typeof window !== 'undefined' ? window.location.origin : ''}${location.pathname}`;
+
+  return generateSEOMeta({
+    title: 'Reset Password',
+    description: 'Reset your HeapMind account password. Enter your email to receive a secure link for password recovery and account access.',
+    keywords: generateAuthPageKeywords(),
+    url,
+    canonical: url,
+    type: 'website',
+    siteName: 'HeapMind SSO',
+  });
+};
 
 const Reset = () => {
   const navigate = useNavigate()

@@ -1,14 +1,29 @@
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { useNavigate } from "react-router"
+import { useNavigate, type MetaFunction } from "react-router"
 
 import { RegisterSchema } from "~/schema/auth"
 import AuthHeader from "~/components/features/auth/AuthHeader"
 import AuthFooter from "~/components/features/auth/AuthFooter"
 import RegisterForm from "~/components/features/auth/RegisterForm"
+import { generateAuthPageKeywords, generateSEOMeta } from "~/lib/seo"
 
 type RegisterFormValues = z.infer<typeof RegisterSchema>
+
+export const meta: MetaFunction = ({ location }) => {
+  const url = `${typeof window !== 'undefined' ? window.location.origin : ''}${location.pathname}`;
+
+  return generateSEOMeta({
+    title: 'Sign Up',
+    description: 'Securely access your HeapMind account. Enter your credentials to sign up and manage your profile, settings, and data.',
+    keywords: generateAuthPageKeywords(),
+    url,
+    canonical: url,
+    type: 'website',
+    siteName: 'HeapMind SSO',
+  });
+};
 
 const Register = () => {
   const navigate = useNavigate()
