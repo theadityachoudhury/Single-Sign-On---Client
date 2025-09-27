@@ -10,6 +10,7 @@ import {
 import type { Route } from "./+types/root";
 import "./app.css";
 import { LoadingProvider } from "~/contexts/loading-context";
+import { ThemeProvider } from "~/contexts/theme-context";
 import { NavigationLoadingBar } from "~/components/layout/navigation-loading-bar";
 import { getErrorMessage } from "./lib/errorMessages";
 import Error from "./components/layout/Error";
@@ -29,12 +30,26 @@ export const links: Route.LinksFunction = () => [
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className="light" style={{ colorScheme: 'light' }}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                const theme = localStorage.getItem('theme') || 'system';
+                const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                const actualTheme = theme === 'system' ? systemTheme : theme;
+                document.documentElement.classList.remove('light', 'dark');
+                document.documentElement.classList.add(actualTheme);
+                document.documentElement.style.colorScheme = actualTheme;
+              })()
+            `,
+          }}
+        />
       </head>
       <body>
         {children}
@@ -47,10 +62,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   return (
-    <LoadingProvider>
-      <NavigationLoadingBar />
-      <Outlet />
-    </LoadingProvider>
+    <ThemeProvider defaultTheme="system" storageKey="theme">
+      <LoadingProvider>
+        <NavigationLoadingBar />
+        <Outlet />
+      </LoadingProvider>
+    </ThemeProvider>
   );
 }
 
