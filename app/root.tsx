@@ -14,6 +14,7 @@ import { ThemeProvider } from "~/contexts/theme-context";
 import { NavigationLoadingBar } from "~/components/layout/navigation-loading-bar";
 import { getErrorMessage } from "./lib/errorMessages";
 import Error from "./components/layout/Error";
+import config from "./config/config";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -35,33 +36,53 @@ export const links: Route.LinksFunction = () => [
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  const isClient = typeof document !== "undefined";
+  const resolvedTheme = (() => {
+    if (!isClient) {
+      return "light";
+    }
+
+    const root = document.documentElement;
+
+    if (root.classList.contains("dark") || root.style.colorScheme === "dark") {
+      return "dark";
+    }
+
+    if (root.classList.contains("light") || root.style.colorScheme === "light") {
+      return "light";
+    }
+
+    const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)")?.matches;
+    return prefersDark ? "dark" : "light";
+  })();
+
   return (
-    <html lang="en" className="light" style={{ colorScheme: 'light' }}>
+    <html lang="en" className={resolvedTheme} style={{ colorScheme: resolvedTheme }}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        
+
         {/* Security Headers via Meta Tags */}
         <meta httpEquiv="X-Content-Type-Options" content="nosniff" />
         <meta httpEquiv="X-Frame-Options" content="DENY" />
         <meta httpEquiv="X-XSS-Protection" content="1; mode=block" />
-        
+
         {/* SEO Meta Tags */}
-        <meta name="author" content="HeapMind" />
-        <meta name="publisher" content="HeapMind" />
-        <meta name="application-name" content="HeapMind SSO" />
-        <meta name="apple-mobile-web-app-title" content="HeapMind" />
+        <meta name="author" content={config.APP_NAME} />
+        <meta name="publisher" content={config.APP_NAME} />
+        <meta name="application-name" content={config.APP_NAME} />
+        <meta name="apple-mobile-web-app-title" content={config.APP_NAME} />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="mobile-web-app-capable" content="yes" />
-        
+
         {/* DNS Prefetching for Performance */}
         <link rel="dns-prefetch" href="//fonts.googleapis.com" />
         <link rel="dns-prefetch" href="//fonts.gstatic.com" />
-        
+
         <Meta />
         <Links />
-        
+
         {/* Theme Detection Script */}
         <script
           dangerouslySetInnerHTML={{
@@ -108,7 +129,6 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
     details =
       getErrorMessage(error.status) || details;
     stack = error.data
-    console.log(error);
   } else if (import.meta.env.DEV && error instanceof Error) {
     const devError = error as Error;
     details = devError.message;

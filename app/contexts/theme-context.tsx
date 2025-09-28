@@ -66,6 +66,7 @@ export function ThemeProvider({
       const root = window.document.documentElement
       root.classList.remove('light', 'dark')
       root.classList.add(resolved)
+      root.style.colorScheme = resolved
     }
   }, [theme])
 
@@ -82,6 +83,7 @@ export function ThemeProvider({
         const root = window.document.documentElement
         root.classList.remove('light', 'dark')
         root.classList.add(resolved)
+        root.style.colorScheme = resolved
       }
 
       mediaQuery.addEventListener('change', handleChange)
