@@ -1,6 +1,5 @@
 import React from 'react'
 import { ThemeSwitcher } from '~/components/ui'
-import config from '~/config/config'
 
 interface AuthContainerProps {
     children: React.ReactNode
@@ -25,11 +24,11 @@ const AuthContainer: React.FC<AuthContainerProps> = ({ children }) => {
                     <div className="flex items-center justify-start mb-4 gap-1">
                         <img
                             src="/logo.png"
-                            alt={`${config.COMPANY_NAME} Logo`}
+                            alt="HeapMind Logo"
                             className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl"
                         />
                         <h1 className="text-3xl font-extrabold tracking-tight text-primary">
-                            {config.APP_NAME}
+                            HeapMind
                         </h1>
                     </div>
 

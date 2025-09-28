@@ -8,7 +8,6 @@ import AuthHeader from "~/components/features/auth/AuthHeader"
 import AuthFooter from "~/components/features/auth/AuthFooter"
 import RegisterForm from "~/components/features/auth/RegisterForm"
 import { generateAuthPageKeywords, generateSEOMeta } from "~/lib/seo"
-import config from "~/config/config"
 
 type RegisterFormValues = z.infer<typeof RegisterSchema>
 
@@ -17,12 +16,12 @@ export const meta: MetaFunction = ({ location }) => {
 
   return generateSEOMeta({
     title: 'Sign Up',
-    description: `Securely access your ${config.COMPANY_NAME} account. Enter your credentials to sign up and manage your profile, settings, and data.`,
+    description: 'Securely access your HeapMind account. Enter your credentials to sign up and manage your profile, settings, and data.',
     keywords: generateAuthPageKeywords(),
     url,
     canonical: url,
     type: 'website',
-    siteName: config.APP_NAME,
+    siteName: 'HeapMind SSO',
   });
 };
 
@@ -64,7 +63,7 @@ const Register = () => {
   return (
     <>
       <AuthHeader
-        title={`Create your ${config.COMPANY_NAME} account`}
+        title="Create your HeapMind account"
         subtitle="Think It. Learn It."
       />
       <RegisterForm

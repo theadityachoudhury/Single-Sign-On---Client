@@ -9,7 +9,6 @@ import AuthHeader from "~/components/features/auth/AuthHeader"
 import AuthFooter from "~/components/features/auth/AuthFooter"
 import ResetForm from "~/components/features/auth/ResetForm"
 import { generateAuthPageKeywords, generateSEOMeta } from "~/lib/seo"
-import config from "~/config/config"
 
 type ResetFormValues = z.infer<typeof ResetPasswordSchema>
 
@@ -18,12 +17,12 @@ export const meta: MetaFunction = ({ location }) => {
 
   return generateSEOMeta({
     title: 'Reset Password',
-    description: `Reset your ${config.COMPANY_NAME} account password. Enter your email to receive a secure link for password recovery and account access.`,
+    description: 'Reset your HeapMind account password. Enter your email to receive a secure link for password recovery and account access.',
     keywords: generateAuthPageKeywords(),
     url,
     canonical: url,
     type: 'website',
-    siteName: config.APP_NAME,
+    siteName: 'HeapMind SSO',
   });
 };
 
