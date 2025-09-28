@@ -2,6 +2,7 @@
 export interface LoadingState {
   isLoading: boolean;
   loadingText?: string;
+  progress: number;
 }
 
 export interface LoadingContextType {

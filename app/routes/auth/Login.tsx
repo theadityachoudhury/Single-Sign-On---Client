@@ -13,6 +13,8 @@ import AuthHeader from "~/components/features/auth/AuthHeader"
 import AuthFooter from "~/components/features/auth/AuthFooter"
 import { generateAuthPageKeywords, generateSEOMeta } from "~/lib/seo"
 import config from "~/config/config"
+import { useLoading } from "~/hooks"
+import { useEffect } from "react"
 
 export const meta: MetaFunction = ({ location }) => {
   const url = `${typeof window !== 'undefined' ? window.location.origin : ''}${location.pathname}`;
@@ -85,9 +87,22 @@ export async function action({ request }: ActionFunctionArgs) {
 
 const Login = () => {
   const fetcher = useFetcher<ActionData>()
+  const { startLoading, stopLoading } = useLoading();
 
   const errors: LoginFormErrors = fetcher.data?.errors ?? {}
   const isSubmitting = fetcher.state !== "idle"
+
+  useEffect(() => {
+    if (fetcher.state === "submitting" || fetcher.state === "loading") {
+      startLoading("Signing you in...")
+    } else {
+      stopLoading()
+    }
+
+    return () => {
+      stopLoading()
+    }
+  }, [fetcher.state, startLoading, stopLoading])
 
   return (
     <>

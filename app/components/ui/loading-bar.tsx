@@ -11,10 +11,15 @@ interface LoadingBarComponentProps extends LoadingBarProps {
 
 export function LoadingBar({ 
   isVisible, 
-  progress = 0, 
+  progress, 
   className, 
   duration = 2000 
 }: LoadingBarComponentProps) {
+  const isDeterminate = typeof progress === "number";
+  const clampedProgress = isDeterminate
+    ? Math.max(0, Math.min(100, progress))
+    : null;
+
   return (
     <AnimatePresence>
       {isVisible && (
@@ -32,12 +37,12 @@ export function LoadingBar({
             <motion.div
               className="h-full bg-gradient-to-r from-blue-500 to-purple-600 shadow-lg"
               initial={{ width: "0%" }}
-              animate={{ 
-                width: progress > 0 ? `${progress}%` : "100%"
+              animate={{
+                width: isDeterminate ? `${clampedProgress}%` : "100%",
               }}
               transition={{
-                duration: progress > 0 ? 0.3 : duration / 1000,
-                ease: progress > 0 ? "easeOut" : "easeInOut"
+                duration: isDeterminate ? 0.3 : duration / 1000,
+                ease: isDeterminate ? "easeOut" : "easeInOut",
               }}
             />
           </div>

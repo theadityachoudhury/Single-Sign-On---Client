@@ -1,14 +1,15 @@
 "use client";
 
-import { SimpleLoadingBar } from "~/components/ui/loading-bar";
+import { LoadingBar } from "~/components/ui/loading-bar";
 import { useCombinedLoading } from "~/hooks/use-loading";
 
 export function NavigationLoadingBar() {
-  const { isLoading } = useCombinedLoading();
+  const { isLoading, progress } = useCombinedLoading();
 
   return (
-    <SimpleLoadingBar 
-      isVisible={isLoading} 
+    <LoadingBar
+      isVisible={isLoading}
+      progress={progress}
       className="bg-gradient-to-r from-blue-500 to-purple-600"
     />
   );

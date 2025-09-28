@@ -32,6 +32,7 @@ export function useLoading() {
     withLoading,
     isLoading: loading.isLoading,
     loadingText: loading.loadingText,
+    progress: loading.progress,
   };
 }
 
@@ -47,7 +48,7 @@ export function useNavigationLoading() {
 }
 
 export function useCombinedLoading() {
-  const { isLoading, loadingText } = useLoading();
+  const { isLoading, loadingText, progress } = useLoading();
   const { isNavigating } = useNavigationLoading();
   
   return {
@@ -55,5 +56,6 @@ export function useCombinedLoading() {
     loadingText: isNavigating ? "Navigating..." : loadingText,
     isNavigating,
     isCustomLoading: isLoading,
+    progress: isLoading ? progress : undefined,
   };
 }
