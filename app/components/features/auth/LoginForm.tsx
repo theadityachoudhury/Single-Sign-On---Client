@@ -1,40 +1,46 @@
-import React from 'react'
-import type { FieldErrors, UseFormHandleSubmit, UseFormRegister } from 'react-hook-form'
-import { Link } from 'react-router'
-import { Button, Input, Label } from '~/components/ui'
-import type { z } from 'zod'
-import type { LoginSchema } from '~/schema/auth'
+import React from "react"
+import type { FetcherWithComponents } from "react-router"
+import { Link } from "react-router"
 
-type LoginFormData = z.infer<typeof LoginSchema>
+import { Button, Input, Label } from "~/components/ui"
+
+export type LoginFormErrors = {
+    email?: string
+    password?: string
+    root?: string
+}
 
 interface LoginFormProps {
-    handleSubmit: UseFormHandleSubmit<LoginFormData>
-    onSubmit: (data: LoginFormData) => Promise<void>
-    errors: FieldErrors<LoginFormData>
-    register: UseFormRegister<LoginFormData>
+    fetcher: FetcherWithComponents<unknown>
+    errors: LoginFormErrors
     isSubmitting: boolean
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({ handleSubmit, onSubmit, errors, register, isSubmitting }) => {
+const LoginForm: React.FC<LoginFormProps> = ({ fetcher, errors, isSubmitting }) => {
     return (
-        <form
-            className="mt-10 space-y-6"
-            onSubmit={handleSubmit(onSubmit)}
-            noValidate
-        >
+        <fetcher.Form className="mt-10 space-y-6" method="post" noValidate>
+            {errors.root && (
+                <div className="rounded-md border border-destructive/20 bg-destructive/10 p-4">
+                    <p className="text-center text-sm text-destructive" role="alert">
+                        {errors.root}
+                    </p>
+                </div>
+            )}
+
             <div className="space-y-2">
                 <Label htmlFor="email">Email address</Label>
                 <Input
                     id="email"
+                    name="email"
                     type="email"
                     autoComplete="email"
                     placeholder="you@example.com"
                     aria-invalid={Boolean(errors.email)}
-                    {...register("email")}
+                    required
                 />
                 {errors.email && (
                     <p className="text-sm text-destructive" role="alert">
-                        {errors.email.message}
+                        {errors.email}
                     </p>
                 )}
             </div>
@@ -43,15 +49,16 @@ const LoginForm: React.FC<LoginFormProps> = ({ handleSubmit, onSubmit, errors, r
                 <Label htmlFor="password">Password</Label>
                 <Input
                     id="password"
+                    name="password"
                     type="password"
                     autoComplete="current-password"
                     placeholder="••••••••"
                     aria-invalid={Boolean(errors.password)}
-                    {...register("password")}
+                    required
                 />
                 {errors.password && (
                     <p className="text-sm text-destructive" role="alert">
-                        {errors.password.message}
+                        {errors.password}
                     </p>
                 )}
             </div>
@@ -60,9 +67,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ handleSubmit, onSubmit, errors, r
                 <label className="flex items-center gap-2 text-sm text-muted-foreground">
                     <input
                         type="checkbox"
+                        name="remember"
                         className="h-4 w-4 rounded border-input bg-background accent-primary"
                         aria-label="Remember me"
-                        {...register("remember")}
                     />
                     Remember me
                 </label>
@@ -78,7 +85,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ handleSubmit, onSubmit, errors, r
             <Button type="submit" className="w-full" disabled={isSubmitting}>
                 {isSubmitting ? "Signing you in…" : "Sign in"}
             </Button>
-        </form>
+        </fetcher.Form>
     )
 }
 
