@@ -1,0 +1,107 @@
+name: Code Quality
+
+on:
+  push:
+    branches: [main, development]
+  pull_request:
+    branches: [main, development]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write # for commenting on PRs
+
+jobs:
+  lint:
+    name: Lint & Format Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Check if ESLint is configured
+        id: eslint-check
+        run: |
+          if npm list eslint &>/dev/null || [ -f .eslintrc.js ] || [ -f .eslintrc.json ] || [ -f eslint.config.js ]; then
+            echo "eslint=true" >> $GITHUB_OUTPUT
+          else
+            echo "eslint=false" >> $GITHUB_OUTPUT
+          fi
+        
+      - name: Run ESLint
+        if: steps.eslint-check.outputs.eslint == 'true'
+        run: npm run lint
+        
+      - name: Check if Prettier is configured
+        id: prettier-check
+        run: |
+          if npm list prettier &>/dev/null || [ -f .prettierrc ] || [ -f .prettierrc.json ] || [ -f prettier.config.js ]; then
+            echo "prettier=true" >> $GITHUB_OUTPUT
+          else
+            echo "prettier=false" >> $GITHUB_OUTPUT
+          fi
+        
+      - name: Check Prettier formatting
+        if: steps.prettier-check.outputs.prettier == 'true'
+        run: npx prettier --check .
+        
+      - name: Setup linting tools (if not configured)
+        if: steps.eslint-check.outputs.eslint == 'false' && steps.prettier-check.outputs.prettier == 'false'
+        run: |
+          echo "No linting tools configured. Consider adding ESLint and Prettier to your project."
+          echo "You can set them up with:"
+          echo "npm install --save-dev eslint prettier @typescript-eslint/parser @typescript-eslint/eslint-plugin"
+
+  security-audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Run security audit
+        run: npm audit --audit-level=high
+        continue-on-error: true
+        
+      - name: Check for outdated packages
+        run: npm outdated || true
+
+  dependency-review:
+    name: Dependency Review
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: moderate
+          allow-licenses: MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC
