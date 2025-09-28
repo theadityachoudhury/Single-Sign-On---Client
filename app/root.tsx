@@ -36,8 +36,28 @@ export const links: Route.LinksFunction = () => [
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  const isClient = typeof document !== "undefined";
+  const resolvedTheme = (() => {
+    if (!isClient) {
+      return "light";
+    }
+
+    const root = document.documentElement;
+
+    if (root.classList.contains("dark") || root.style.colorScheme === "dark") {
+      return "dark";
+    }
+
+    if (root.classList.contains("light") || root.style.colorScheme === "light") {
+      return "light";
+    }
+
+    const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)")?.matches;
+    return prefersDark ? "dark" : "light";
+  })();
+
   return (
-    <html lang="en" className="light" style={{ colorScheme: 'light' }}>
+    <html lang="en" className={resolvedTheme} style={{ colorScheme: resolvedTheme }}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
