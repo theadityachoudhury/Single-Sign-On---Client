@@ -10,18 +10,19 @@ import AuthHeader from "~/components/features/auth/AuthHeader"
 import AuthFooter from "~/components/features/auth/AuthFooter"
 import { ThemeSwitcher } from "~/components/ui"
 import { generateAuthPageKeywords, generateSEOMeta } from "~/lib/seo"
+import config from "~/config/config"
 
 export const meta: MetaFunction = ({ location }) => {
   const url = `${typeof window !== 'undefined' ? window.location.origin : ''}${location.pathname}`;
 
   return generateSEOMeta({
     title: 'Sign In',
-    description: 'Securely access your HeapMind account. Enter your credentials to sign in and manage your profile, settings, and data.',
+    description: `Securely access your ${config.COMPANY_NAME} account. Enter your credentials to sign in and manage your profile, settings, and data.`,
     keywords: generateAuthPageKeywords(),
     url,
     canonical: url,
     type: 'website',
-    siteName: 'HeapMind SSO',
+    siteName: config.APP_NAME,
   });
 };
 
@@ -65,7 +66,7 @@ const Login = () => {
   return (
     <>
       <AuthHeader
-        title="Log in to your HeapMind account"
+        title={`Log in to your ${config.COMPANY_NAME} account`}
         subtitle="Think It. Learn It."
       />
       <LoginForm
