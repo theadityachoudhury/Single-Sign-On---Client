@@ -1,5 +1,4 @@
 import type { MetaDescriptor } from "react-router";
-import config from "~/config/config";
 
 interface SEOConfig {
   title: string;
@@ -15,7 +14,7 @@ interface SEOConfig {
 }
 
 const defaultSEOConfig = {
-  siteName: config.APP_NAME,
+  siteName: 'HeapMind SSO',
   type: 'website' as const,
   twitterCard: 'summary_large_image' as const,
   image: '/og-image.png', // Default OG image
@@ -64,7 +63,7 @@ export function generateSEOMeta(config: SEOConfig): MetaDescriptor[] {
   return meta;
 }
 
-export function generateLoginPageStructuredData(siteName: string = config.APP_NAME) {
+export function generateLoginPageStructuredData(siteName: string = 'HeapMind SSO') {
   return {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
