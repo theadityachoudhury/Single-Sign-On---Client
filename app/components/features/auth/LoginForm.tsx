@@ -3,11 +3,12 @@ import type { FetcherWithComponents } from "react-router"
 import { Link } from "react-router"
 
 import { Button, Input, Label } from "~/components/ui"
+import type { LoginSchemaType } from "~/schema/auth"
 
 export type LoginFormErrors = {
-    email?: string
-    password?: string
-    root?: string
+    [K in keyof LoginSchemaType]?: LoginSchemaType[K]
+} & {
+  root?: string
 }
 
 interface LoginFormProps {

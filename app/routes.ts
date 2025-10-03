@@ -10,8 +10,8 @@ export default [
   ...prefix("auth", [
     index("routes/auth/index.tsx"),
     layout("components/layout/Auth.tsx", [
-      route("login", "routes/auth/Login.tsx"),
-      route("register", "routes/auth/Register.tsx"),
-      route("reset", "routes/auth/Reset.tsx"),
+      route("login", "routes/auth/Login/Login.tsx"),
+      route("register", "routes/auth/Register/Register.tsx"),
+      route("reset", "routes/auth/Reset/Reset.tsx"),
     ])])
 ] satisfies RouteConfig;
